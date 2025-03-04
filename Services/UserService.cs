@@ -169,6 +169,17 @@ namespace UserTemplate.Services
             }
         }
 
+        public async Task Logout(Guid id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null) throw new Exception("User not found");
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiry = null;
+            await _context.SaveChangesAsync();
+        }
+
+
         private UserDto MapToDto(User user)
         {
             return new UserDto
@@ -200,7 +211,7 @@ namespace UserTemplate.Services
                     issuer: _configuration["Jwt:Issuer"],
                     audience: _configuration["Jwt:Audience"],
                     claims: claims,
-                    expires: DateTime.UtcNow.AddDays(1),
+                    expires: DateTime.UtcNow.AddMinutes(1),//1 min
                     signingCredentials: creds);
 
                 return new JwtSecurityTokenHandler().WriteToken(token);

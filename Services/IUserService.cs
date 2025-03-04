@@ -12,5 +12,8 @@ namespace UserTemplate.Services
         Task DeleteUser(Guid id);
 
         Task<(string, string)> RefreshToken(RefreshTokenRequest refreshTokenRequest);
+
+        Task Logout(Guid id);
+
     }
 }

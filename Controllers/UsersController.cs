@@ -60,7 +60,7 @@ namespace UserTemplate.Controllers
             }
             catch (Exception ex)
             {
-                return Unauthorized(new
+                return BadRequest(new
                 {
                     message = ex.Message,
                     success = false,
@@ -189,7 +189,7 @@ namespace UserTemplate.Controllers
             }
             catch (Exception ex)
             {
-                return Unauthorized(new
+                return BadRequest(new
                 {
                     message = ex.Message,
                     success = false,
@@ -197,5 +197,32 @@ namespace UserTemplate.Controllers
                 });
             }
         }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                await _userService.Logout(userId);
+                return Ok(new
+                {
+                    message = "Logout successful!",
+                    success = true,
+                    data = (object)null
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    message = "Failed to Logout",
+                    success = false,
+                    data = (object)null
+                });
+            }
+        }
+
     }
 }
